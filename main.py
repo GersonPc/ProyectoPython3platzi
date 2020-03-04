@@ -19,6 +19,15 @@ def update_client(client_name, update_client_name):
     else:
         print('Not found client')
 
+def searh_client(name):
+    global clientes
+    clients_list = clientes.split(',')
+    for cliente in clients_list:
+        if cliente != name:
+            continue
+        else:
+            return True
+
 def delete_client(client_name):
     global clientes
     if client_name in clientes:
@@ -37,9 +46,12 @@ def _print_welcome():
     print('[C]reate client')
     print('[U]pdate client')
     print('[D]elete client')
+    print('[S]earch client')
 
 def _get_client_name():
     return input('What is the client name? ')
+
+
 if __name__ == "__main__":
     _print_welcome()
 
@@ -58,5 +70,12 @@ if __name__ == "__main__":
         update_client_name = input('What is the updated client name ')
         update_client(client_name,update_client_name)
         list_clients()
+    elif commad == "S":
+        client_name = _get_client_name()
+        found = searh_client(client_name)
+        if found:
+            print("The client is in the list client\'s")
+        else:
+            print('The client: {} is not in our client\'s list'.format(client_name))
     else:
         print('Command Invalid')
