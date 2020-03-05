@@ -1,30 +1,29 @@
 import sys
 
-clientes = 'pablo,juan,mario,'
+clientes = ['pablo', 'juan', 'mario']
 
 def create_client(client_name):
     global clientes
     if client_name not in clientes:
-        clientes += client_name
-        _add_comma()
+        clientes.append(client_name)
     else:
         print('Client alredy is in client\'s list')
 
 def list_clients():
-    global clientes
-    print(clientes)
+    for idx, cliente in enumerate(clientes):
+        print('{}: {}'.format(idx, cliente))
 
 def update_client(client_name, update_client_name):
     global clientes
     if client_name in clientes:
-        clientes = clientes.replace(client_name + ',', update_client_name + ',')
+        index = clientes.index(client_name)
+        clientes[index] = update_client_name
     else:
         print('Not found client')
 
 def searh_client(name):
     global clientes
-    clients_list = clientes.split(',')
-    for cliente in clients_list:
+    for cliente in clientes:
         if cliente != name:
             continue
         else:
@@ -33,18 +32,15 @@ def searh_client(name):
 def delete_client(client_name):
     global clientes
     if client_name in clientes:
-        clientes = clientes.replace(client_name + ',' , '')
+        clientes.remove(client_name)
     else:
         print('Not Found Client')
-
-def _add_comma():
-    global clientes
-    clientes += ','
 
 def _print_welcome():
     print('Welcome To Platzi Ventas')
     print('*' * 50)
     print('What would yo like to day')
+    print('[L]ist clients')
     print('[C]reate client')
     print('[U]pdate client')
     print('[D]elete client')
@@ -86,5 +82,7 @@ if __name__ == "__main__":
             print("The client is in the list client\'s")
         else:
             print('The client: {} is not in our client\'s list'.format(client_name))
+    elif commad == 'L':
+        list_clients()
     else:
         print('Command Invalid')
