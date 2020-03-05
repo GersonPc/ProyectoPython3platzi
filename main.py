@@ -1,6 +1,19 @@
 import sys
 
-clientes = ['pablo', 'juan', 'mario']
+clientes = [
+    {
+        'name': 'Juan',
+        'company': 'Maxidespensa',
+        'email' : 'Juan@maxi.com',
+        'position' : 'Sofware Engineer'
+    },
+    {
+        'name': 'Pedro',
+        'company': 'Google',
+        'email' : 'Pedro@google.com',
+        'position' : 'UX Designer'
+    },
+]
 
 def create_client(client_name):
     global clientes
@@ -11,23 +24,37 @@ def create_client(client_name):
 
 def list_clients():
     for idx, cliente in enumerate(clientes):
-        print('{}: {}'.format(idx, cliente))
+        print('{uid} | {name} | {company} | {email} | {position}'.format(
+            uid=idx,
+            name=cliente['name'],
+            company=cliente['company'],
+            email=cliente['email'],
+            position=cliente['position']
 
-def update_client(client_name, update_client_name):
+        ))
+
+def update_client_search(client_name):
     global clientes
-    if client_name in clientes:
-        index = clientes.index(client_name)
-        clientes[index] = update_client_name
-    else:
-        print('Not found client')
+    indice = 0
+    for idx in clientes:
+        indice += 1
+        for values in idx.values():
+            if client_name == values:
+                return indice - 1
+
+def update_client(client_name, update_people):
+    global clientes
+    indice =  int(update_client_search(client_name))
+    clientes [indice] = update_people
 
 def searh_client(name):
     global clientes
-    for cliente in clientes:
-        if cliente != name:
-            continue
-        else:
-            return True
+    for idx in clientes:
+        for persona in idx.values():
+            if name == persona:
+                return True
+            else:
+                False
 
 def delete_client(client_name):
     global clientes
@@ -46,6 +73,12 @@ def _print_welcome():
     print('[D]elete client')
     print('[S]earch client')
 
+def _get_client_field(field_name):
+    field = None
+    while not field:
+        field = input('What is the client {}?'.format(field_name))
+    return field
+
 def _get_client_name():
     client_name = None
     while not client_name:
@@ -63,18 +96,34 @@ if __name__ == "__main__":
     commad = input()
     commad = commad.upper()
     if commad == 'C':
-        client_name = _get_client_name()
+        client_name = {
+            'name': _get_client_field('name'),
+            'company': _get_client_field('company'),
+            'email': _get_client_field('email'),
+            'position': _get_client_field('position'),
+        }
         create_client(client_name)
         list_clients()
     elif commad == 'D':
         client_name = _get_client_name()
         delete_client(client_name)
         list_clients()
+
     elif commad == 'U':
         client_name = _get_client_name()
-        update_client_name = input('What is the updated client name ')
-        update_client(client_name,update_client_name)
-        list_clients()
+        found = searh_client(client_name)
+        if found:
+            update_client_name = {
+            'name': _get_client_field('name'),
+            'company': _get_client_field('company'),
+            'email': _get_client_field('email'),
+            'position': _get_client_field('position'),
+        }
+            update_client(client_name,update_client_name)
+            list_clients()
+        else:
+            print('The client: {} is not in our client\'s list'.format(client_name))
+
     elif commad == "S":
         client_name = _get_client_name()
         found = searh_client(client_name)
@@ -82,6 +131,7 @@ if __name__ == "__main__":
             print("The client is in the list client\'s")
         else:
             print('The client: {} is not in our client\'s list'.format(client_name))
+
     elif commad == 'L':
         list_clients()
     else:
