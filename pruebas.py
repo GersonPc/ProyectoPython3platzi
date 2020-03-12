@@ -1,3 +1,5 @@
+import sys
+
 clients = 'Juan,Pedro,Mario,'
 
 def create_client(name):
@@ -30,6 +32,16 @@ def delete_client(name):
         print('*'*10)
         list_clients()
 
+def search_client(client_name):
+    global clients
+    lista_de_clientes = clients.split(',')
+    for cliente in lista_de_clientes:
+        if cliente != client_name:
+            continue
+        else:
+            return True
+
+
 def _add_comma():
     global clients
     clients += ','
@@ -42,13 +54,24 @@ def _print_welcome():
     print('Welcome to my code')
     print('*' * 50)
     print('What would yo like do today?')
+    print('[L]ist clients')
     print('[C]reate client')
     print('[D]elete client')
     print('[U]pdate client')
+    print('[S]earch client')
 
 def _get_client_name():
-    return input('What is the cliente name? ')
+    client_name = None
+    while not client_name:
+        if client_name == 'exit':
+            break
+        client_name = input('What is the cliente name?: ')
 
+    if not client_name:
+        sys.exit()
+    return client_name
+
+    
 if __name__ == '__main__':
     _print_welcome()
     command = input()
@@ -65,5 +88,14 @@ if __name__ == '__main__':
         client_name = _get_client_name()
         update_client_name = input('What is the updated client name? ')
         update_client(client_name, update_client_name)
+    elif command == 'S':
+        client_name = _get_client_name()
+        found = search_client(client_name)
+        if found:
+            print('El cliente esta en la lista de clientes')
+        else:
+            print('El cliente {} no esta en la lisat de clientes'.format(client_name))
+    elif command == 'L':
+        list_clients()
     else:
         print('Comand Invalid')
