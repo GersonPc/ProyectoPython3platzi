@@ -30,7 +30,6 @@ def list_clients():
             company=cliente['company'],
             email=cliente['email'],
             position=cliente['position']
-
         ))
 
 def update_client_search(client_name):
