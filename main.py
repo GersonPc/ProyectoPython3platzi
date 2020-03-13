@@ -1,19 +1,26 @@
 import sys
+import csv
+import os
 
-clientes = [
-    {
-        'name': 'Juan',
-        'company': 'Maxidespensa',
-        'email' : 'Juan@maxi.com',
-        'position' : 'Sofware Engineer'
-    },
-    {
-        'name': 'Pedro',
-        'company': 'Google',
-        'email' : 'Pedro@google.com',
-        'position' : 'UX Designer'
-    },
-]
+
+CLIENT_TABLE = '.client.csv'
+CLIENT_SCHEMA = ['name', 'company', 'email', 'position']
+clientes = []
+
+def _initialize_clients_from_storage():
+    with open(CLIENT_TABLE, mode='r') as f:
+        reader = csv.DictReader(f, fieldnames=CLIENT_SCHEMA)
+        for row in reader:
+            clientes.append(row)
+
+def _save_clients_to_storage():
+    tmp_table_name = '{}.tmp'.format(CLIENT_TABLE)
+    with open(tmp_table_name, mode='w') as f:
+        writer = csv.DictWriter(f, fieldnames=CLIENT_SCHEMA)
+        writer.writerows(clientes)
+        
+        os.remove(CLIENT_TABLE)
+        os.rename(tmp_table_name, CLIENT_TABLE)
 
 def create_client(client_name):
     global clientes
@@ -23,6 +30,8 @@ def create_client(client_name):
         print('Client alredy is in client\'s list')
 
 def list_clients():
+    print('ID | NAME | COMPANY | EMAIL | POSITION')
+    print('#' * 90)
     for idx, cliente in enumerate(clientes):
         print('{uid} | {name} | {company} | {email} | {position}'.format(
             uid=idx,
@@ -90,6 +99,7 @@ def _get_client_name():
     return client_name
 
 if __name__ == "__main__":
+    _initialize_clients_from_storage()
     _print_welcome()
 
     commad = input()
@@ -102,11 +112,9 @@ if __name__ == "__main__":
             'position': _get_client_field('position'),
         }
         create_client(client_name)
-        list_clients()
     elif commad == 'D':
         client_name = _get_client_name()
         delete_client(client_name)
-        list_clients()
 
     elif commad == 'U':
         client_name = _get_client_name()
@@ -119,7 +127,6 @@ if __name__ == "__main__":
             'position': _get_client_field('position'),
         }
             update_client(client_name,update_client_name)
-            list_clients()
         else:
             print('The client: {} is not in our client\'s list'.format(client_name))
 
@@ -130,8 +137,8 @@ if __name__ == "__main__":
             print("The client is in the list client\'s")
         else:
             print('The client: {} is not in our client\'s list'.format(client_name))
-
     elif commad == 'L':
         list_clients()
     else:
         print('Command Invalid')
+    _save_clients_to_storage()
