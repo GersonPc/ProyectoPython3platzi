@@ -5,6 +5,7 @@ import os
 CLIENT_TABLE = '.clients.csv'
 CLIENT_SCHEMA = ['name', 'company', 'email', 'position']
 clients = []
+PASSWORD = '1234'
 
 def _initialize_from_storage():
     with open(CLIENT_TABLE, mode='r') as f:
@@ -81,6 +82,7 @@ def _print_welcome():
     print('[S]earch client')
     print('*****************************')
     print('[B]usqueda Binaria')
+    print('[DE]coradores')
 
 def _get_client_field(field_name):
     field = None
@@ -131,7 +133,34 @@ def busqueda_binaria():
     found2 = binary_search(data, target, 0, len(data) - 1)
     print('La busqueda que si funciona: {}'.format(found))
     print('La busqueda que talvez funciona: {}'.format(found2))
-    
+
+def password_requirements(func):
+    def wrapper():
+        password = input('Cual es tu contrasena? ')
+        if password == PASSWORD:
+            return func()
+        else:
+            print('La contrasena no es correcra')
+    return wrapper
+
+def decoradores():
+    #needs_password()
+    print(say_my_name('Gerson'))
+
+@password_requirements
+def needs_password():
+    print('The password is correct')
+
+def _upper(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return result.upper()
+    return wrapper
+
+@_upper
+def say_my_name(name):
+    return 'Hola! {}'.format(name)
+
 if __name__ == '__main__':
     _initialize_from_storage()
     _print_welcome()
@@ -168,6 +197,8 @@ if __name__ == '__main__':
         list_clients()
     elif command == 'B':
         busqueda_binaria()
+    elif command == 'DE':
+        decoradores()
     else:
         print('Comand Invalid')
     _save_clients_to_storage()
