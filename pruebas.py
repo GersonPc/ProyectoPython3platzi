@@ -1,20 +1,24 @@
 import sys
 import random
+import csv
+import os
+CLIENT_TABLE = '.clients.csv'
+CLIENT_SCHEMA = ['name', 'company', 'email', 'position']
+clients = []
 
-clients = [
-    {
-        'name': 'Pablo',
-        'company': 'Amazon',
-        'email' : 'pablo@amazon.com',
-        'position': 'UX Designer'
-    },
-    {
-        'name': 'Juan',
-        'company': 'Microsoft',
-        'email' : 'juan@microsoft.com',
-        'position': 'Full Stack Developer'
-    }
-]
+def _initialize_from_storage():
+    with open(CLIENT_TABLE, mode='r') as f:
+        reader = csv.DictReader(f, fieldnames=CLIENT_SCHEMA)
+        for row in reader:
+            clients.append(row)
+
+def _save_clients_to_storage():
+    tmp_table_name = '{}.tmp'.format(CLIENT_TABLE)
+    with open(tmp_table_name, mode='w') as f:
+        writer = csv.DictWriter(f, fieldnames=CLIENT_SCHEMA)
+        writer.writerows(clients)
+        os.remove(CLIENT_TABLE)
+        os.rename(tmp_table_name, CLIENT_TABLE)
 
 def create_client(cliente):
     global clients
@@ -57,6 +61,7 @@ def search_client(client_name):
 def list_clients():
     global clients
     for idx, client in enumerate(clients):
+        print('uid | name | company | email | position.')
         print('{uid} | {name} | {company} | {email} | {position}.'.format(
             uid=idx,
             name=client['name'],
@@ -128,6 +133,7 @@ def busqueda_binaria():
     print('La busqueda que talvez funciona: {}'.format(found2))
     
 if __name__ == '__main__':
+    _initialize_from_storage()
     _print_welcome()
     command = input()
     command = command.upper() 
@@ -139,11 +145,9 @@ if __name__ == '__main__':
             'position': _get_client_field('position'),
         }
         create_client(cliente)
-        list_clients()
     elif command == 'D':
         client_name = _get_client_name()
         delete_client(client_name)
-        list_clients()
     elif command == 'U':
         client_name = _get_client_name()
         update_client_name = {
@@ -166,3 +170,4 @@ if __name__ == '__main__':
         busqueda_binaria()
     else:
         print('Comand Invalid')
+    _save_clients_to_storage()
