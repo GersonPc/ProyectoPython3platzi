@@ -1,4 +1,5 @@
 import sys
+import random
 
 clients = [
     {
@@ -73,6 +74,8 @@ def _print_welcome():
     print('[D]elete client')
     print('[U]pdate client')
     print('[S]earch client')
+    print('*****************************')
+    print('[B]usqueda Binaria')
 
 def _get_client_field(field_name):
     field = None
@@ -90,6 +93,39 @@ def _get_client_name():
     if not client_name:
         sys.exit()
     return client_name
+
+def binary_search(data, target, low, high):
+    if low > high:
+        return False
+    mitad = (low + high) // 2
+    if target == data[mitad]:
+        return True
+    elif target < data[mitad]:
+        return binary_search(data, target, low, mitad -1)
+    else:
+        return binary_search(data, target, mitad + 1, high)
+
+def busqueda_binaria2(data, target, low, high):
+    while True:
+        if low > high:
+            return False
+        mid = (low + high) // 2
+        if target == data [mid]:
+            return True
+        elif target < data [mid]:
+            high = mid - 1
+        else:
+            low = mid + 1
+
+def busqueda_binaria():
+    data = [random.randint(0,100) for i in range(15)]
+    data.sort()
+    print(data)
+    target = int(input("Que numero quieres buscar? "))
+    found = binary_search(data, target, 0, len(data) - 1)
+    found2 = binary_search(data, target, 0, len(data) - 1)
+    print('La busqueda que si funciona: {}'.format(found))
+    print('La busqueda que talvez funciona: {}'.format(found2))
     
 if __name__ == '__main__':
     _print_welcome()
@@ -126,5 +162,7 @@ if __name__ == '__main__':
             print('El cliente {} no esta en la lisat de clientes'.format(client_name))
     elif command == 'L':
         list_clients()
+    elif command == 'B':
+        busqueda_binaria()
     else:
         print('Comand Invalid')
