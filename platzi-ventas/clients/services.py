@@ -1,6 +1,6 @@
 import csv
-from clients.models import Client
 import os
+from clients.models import Client
 
 
 class ClientService:
@@ -28,9 +28,17 @@ class ClientService:
                 update_clients.append(client)
         self._save_to_disk(update_clients)
     
-    def _save_to_disk(clients):
+    def delete_client(self, for_delete):
+        clients = self.list_clients()
+        for client in clients:
+            if client['uid'] == for_delete.uid:
+                clients.remove(client)
+                break
+        self._save_to_disk(clients)
+
+    def _save_to_disk(self, clients):
         tmp_table_name = self.table_name + '.tmp'
-        with open(tmp_table_name) as f:
+        with open(tmp_table_name, mode='w') as f:
             writer = csv.DictWriter(f, fieldnames=Client.schema())
             writer.writerows(clients)
         
